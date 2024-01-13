@@ -7,8 +7,11 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
-#include "Constants.h"
-#include "subsystems/ExampleSubsystem.h"
+#include "HardwarePorts.h"
+
+#include "subsystems/DriveSubsystem.h"
+
+#include "commands/DriveCommand.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -23,13 +26,14 @@ class RobotContainer {
 
   frc2::CommandPtr GetAutonomousCommand();
 
+  void Init();
+
  private:
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandXboxController m_driverController{
-      OperatorConstants::kDriverControllerPort};
-
-  // The robot's subsystems are defined here...
-  ExampleSubsystem m_subsystem;
-
   void ConfigureBindings();
+
+  // Controllers
+  frc::XboxController m_DriveController {ControllerPort::DRIVE_CONTROLLER};
+
+  // Subsystems
+  DriveSubsystem m_DriveSub;
 };

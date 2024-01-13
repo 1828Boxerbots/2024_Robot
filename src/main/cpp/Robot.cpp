@@ -6,7 +6,10 @@
 
 #include <frc2/command/CommandScheduler.h>
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() 
+{
+  m_Container.Init();
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -34,7 +37,7 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  m_autonomousCommand = m_container.GetAutonomousCommand();
+  m_autonomousCommand = m_Container.GetAutonomousCommand();
 
   if (m_autonomousCommand) {
     m_autonomousCommand->Schedule();
