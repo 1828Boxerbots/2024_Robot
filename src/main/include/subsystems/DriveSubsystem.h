@@ -17,10 +17,12 @@ public:
 
     void Periodic() override;
 
-    void Move(double x, double y);
+    void TankDrive(double leftY, double rightY);
 
 private:
     // Motor Controllers
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_VictorSPX {CanID::VictorSPX};
-    rev::CANSparkMax m_SparkMAX {CanID::SparkMAX, rev::CANSparkMax::MotorType::kBrushed};
+    rev::CANSparkMax m_LeftDrive1 {CanID::DRIVE_LEFT1, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax m_LeftDrive2 {CanID::DRIVE_LEFT2, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax m_RightDrive1 {CanID::DRIVE_RIGHT1, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax m_RightDrive2 {CanID::DRIVE_RIGHT2, rev::CANSparkMax::MotorType::kBrushless};
 };

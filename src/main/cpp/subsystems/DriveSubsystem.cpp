@@ -17,8 +17,10 @@ void DriveSubsystem::Periodic()
     //       smart dashboard.
 }
 
-void DriveSubsystem::Move(double x, double y)
+void DriveSubsystem::TankDrive(double leftY, double rightY)
 {
-    m_SparkMAX.Set(y);
-    m_VictorSPX.Set(y);
+    m_LeftDrive1.Set(leftY);
+    m_LeftDrive2.Set(leftY);
+    m_RightDrive1.Set(rightY);
+    m_RightDrive2.Set(rightY);
 }
