@@ -7,8 +7,13 @@ DriveSubsystem::DriveSubsystem()
 
 void DriveSubsystem::Init()
 {
-    // NOTE: Currently does nothing
     // NOTE: Use this to set motor inversion, encoder state, etc.
+
+    m_neoR1.SetInverted(true);
+    m_sparkR2.SetInverted(true);
+
+    m_neoL1.SetInverted(false);
+    m_sparkL2.SetInverted(false);
 }
 
 void DriveSubsystem::Periodic()
@@ -19,6 +24,11 @@ void DriveSubsystem::Periodic()
 
 void DriveSubsystem::Move(double x, double y)
 {
-    m_SparkMAX.Set(y);
-    m_VictorSPX.Set(y);
+    //Left:
+    m_neoR1.Set(y);
+    m_sparkR2.Set(y);
+
+    //Right:
+    m_neoL1.Set(y);
+    m_sparkL2.Set(y);
 }

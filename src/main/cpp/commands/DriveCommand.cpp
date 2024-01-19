@@ -19,9 +19,12 @@ void DriveCommand::Execute()
     double leftY = 0.0;
 
     if (m_pController != nullptr)
+    {
         leftY = m_pController->GetLeftY();
+    }
 
     m_pDriveSub->Move(leftX, leftY);
+
 }
 
 void DriveCommand::End(bool isInterrupted)

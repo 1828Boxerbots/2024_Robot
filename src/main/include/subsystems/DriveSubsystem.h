@@ -6,6 +6,8 @@
 #include <ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>
 #include <rev/CANSparkMax.h>
 
+#include <frc/motorcontrol/Spark.h>
+
 #include "HardwarePorts.h"
 
 class DriveSubsystem : public frc2::Subsystem
@@ -21,6 +23,15 @@ public:
 
 private:
     // Motor Controllers
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_VictorSPX {CanID::VictorSPX};
-    rev::CANSparkMax m_SparkMAX {CanID::SparkMAX, rev::CANSparkMax::MotorType::kBrushed};
+    //ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_VictorSPX {CanID::VictorSPX};
+    //rev::CANSparkMax m_SparkMAX {CanID::SparkMAX, rev::CANSparkMax::MotorType::kBrushed};
+
+    //Test Motors (Shooter):
+    frc::Spark m_sparkL2{1};
+    frc::Spark m_sparkR2{2};
+
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_VictorSPXL1 {CanID::VictorSPXL1};
+    rev::CANSparkMax m_neoL1 {CanID::SparkMAXL1, rev::CANSparkMax::MotorType::kBrushed};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_VictorSPXR1 {CanID::VictorSPXR1};
+    rev::CANSparkMax m_neoR1 {CanID::SparkMAXR1, rev::CANSparkMax::MotorType::kBrushed};
 };
