@@ -9,11 +9,11 @@ void DriveSubsystem::Init()
 {
     // NOTE: Use this to set motor inversion, encoder state, etc.
 
-    m_neoR1.SetInverted(true);
-    m_sparkR2.SetInverted(true);
+    m_neoR1.SetInverted(false);
+    m_sparkR2.SetInverted(false);
 
-    m_neoL1.SetInverted(false);
-    m_sparkL2.SetInverted(false);
+    m_neoL1.SetInverted(true);
+    m_sparkL2.SetInverted(true);
 }
 
 void DriveSubsystem::Periodic()

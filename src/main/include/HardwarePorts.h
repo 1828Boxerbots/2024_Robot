@@ -7,8 +7,8 @@ enum ControllerPort
 
 enum CanID
 {
-    VictorSPXR1 = 0,
-    VictorSPXL1 = 1,
+    VictorSPXR1 = 2,
+    VictorSPXL1 = 3,
     SparkMAXR1 = 2,
     SparkMAXL1 = 3,
 };
