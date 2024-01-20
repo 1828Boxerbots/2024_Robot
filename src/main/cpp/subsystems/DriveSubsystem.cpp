@@ -24,11 +24,14 @@ void DriveSubsystem::Periodic()
 
 void DriveSubsystem::Move(double x, double y)
 {
+
+    double yMod = (y*0.75);
+
     //Left:
-    m_neoR1.Set(y);
-    m_sparkR2.Set(y);
+    m_neoR1.Set(yMod);
+    m_sparkR2.Set(yMod);
 
     //Right:
-    m_neoL1.Set(y);
-    m_sparkL2.Set(y);
+    m_neoL1.Set(yMod);
+    m_sparkL2.Set(yMod);
 }
