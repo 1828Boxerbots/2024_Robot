@@ -4,11 +4,12 @@
 
 #include "commands/VisionAlignCmd.h"
 
-VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed) 
+VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed, double deadZone)
 {
   m_pVisionSub = pVisionSub;
   m_pDriveSub = pDriveSub;
   m_speed = speed;
+  m_deadZone = deadZone;
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_pVisionSub);
   AddRequirements(m_pDriveSub);
