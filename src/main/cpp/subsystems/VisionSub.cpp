@@ -158,6 +158,11 @@ double VisionSub::GetTargArea(int id)
     return 0.0;
 }
 
+void VisionSub::SetPipeline(int pipeline)
+{
+    m_testCam.SetPipelineIndex(pipeline);
+}
+
 units::meter_t VisionSub::GetTargDist(int id)
 {
     if (id == m_idRequested)

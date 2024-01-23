@@ -6,6 +6,7 @@
 
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include "subsystems/VisionSub.h"
 #include "subsystems/DriveSub.h"
 
@@ -19,7 +20,7 @@
 class VisionAlignCmd : public frc2::CommandHelper<frc2::Command, VisionAlignCmd> 
 {
  public:
-  VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed, double deadZone);
+  VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed, double deadZone, int targID);
 
   void Initialize() override;
 
@@ -34,4 +35,7 @@ class VisionAlignCmd : public frc2::CommandHelper<frc2::Command, VisionAlignCmd>
   DriveSub* m_pDriveSub = nullptr;
   double m_speed = 0.0;
   double m_deadZone = 0.0;
+  double m_targYaw =0.0;
+  int m_targID = 0;
+  int m_pipeline = 0;
 };

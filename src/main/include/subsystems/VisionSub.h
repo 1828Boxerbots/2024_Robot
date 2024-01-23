@@ -26,6 +26,7 @@ class VisionSub : public frc2::SubsystemBase
   double GetTargPitch(int id);
   double GetTargSkew(int id);
   double GetTargArea(int id);
+  void SetPipeline(int pipeline);
   units::meter_t GetTargDist(int id);
 
  private:
