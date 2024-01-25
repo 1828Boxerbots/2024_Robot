@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc2/command/button/Trigger.h>
+#include "commands/VisionAlignCmd.h"
 
 #include "commands/Autos.h"
 
@@ -25,13 +26,13 @@ void RobotContainer::Init()
   m_shooterSub.Init();
 }
 
-void RobotContainer::ConfigureBindings() {
+void RobotContainer::ConfigureBindings() 
+{
   // Configure your trigger bindings here
-
   // // Load
   // m_driverController.A().WhileTrue(LoadCommand(m_pLoadSub, &m_driverController, 1.0, LoaderSubBase::intake).ToPtr()); // m_aButton.WhenHeld(m_pLoadIntakeCMD);
   // m_driverController.B().WhileTrue(LoadCommand(m_pLoadSub, &m_driverController, 1.0, LoaderSubBase::intake).ToPtr()); // m_bButton.WhenHeld(m_pLoadUpperCMD);
-  // m_driverController.X().WhileTrue(LoadCommand(m_pLoadSub, &m_driverController, 1.0, LoaderSubBase::lower).ToPtr()); // m_xButton.WhenHeld(m_pLoadLowerCMD);
+   m_driverController.X().WhileTrue(VisionAlignCmd(&m_visionSub, &m_driveSub, 0.5, 0.1).ToPtr()); // m_xButton.WhenHeld(m_pLoadLowerCMD);
   // m_driverController.Y().WhileTrue(LoadCommand(m_pLoadSub, &m_driverController).ToPtr()); // m_yButton.WhenHeld(m_pLoadAllCMD);
   // // Shoot
   // m_driverController.RightTrigger().WhileTrue(ShootCommand(m_pShootSub, &m_driverController).ToPtr()); // m_rightTrigger.WhenHeld(m_pShootCMD);

@@ -8,6 +8,7 @@
 #include <photon/PhotonUtils.h>
 #include <photon/PhotonCamera.h>
 #include <frc/SmartDashboard/SmartDashboard.h>
+#include "subsystems/VisionData.h"
 
 
 class VisionSub : public frc2::SubsystemBase 
@@ -26,12 +27,13 @@ class VisionSub : public frc2::SubsystemBase
   double GetTargPitch(int id);
   double GetTargSkew(int id);
   double GetTargArea(int id);
-  void SetPipeline(int pipeline);
+  int GetTargID();
+  void ResetVisionData();
   units::meter_t GetTargDist(int id);
 
  private:
   //Initialize Camera:
-  photon::PhotonCamera m_testCam{"TestCam1 "};
+  photon::PhotonCamera m_testCam{"TestCam1"};
 
   //Initialize Data Variables:
   int m_targetID = 0;
@@ -45,12 +47,18 @@ class VisionSub : public frc2::SubsystemBase
   double m_targetPitch2 = 0.0;
   double m_targetYaw2 = 0.0;
   double m_targetArea2 = 0.0;
+  int m_targetAmount = 0;
+  int m_fiducialID1;
+  int m_fiducialID2;
+  int m_fiducialID3;
     
   units::meter_t m_targetDist = 0.0_in;
   units::meter_t m_targetDist2 = 0.0_in;
   const units::meter_t m_kCamHeight = 0.0625_ft;
   const units::meter_t m_kTargetHeight = 4_in;
   const units::radian_t m_kCamPitch = 0.0_deg;
+
+  VisionData m_visionData[16];
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
