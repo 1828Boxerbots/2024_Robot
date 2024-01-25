@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <units/length.h>
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -17,5 +19,9 @@
 namespace OperatorConstants {
 
 inline constexpr int kDriverControllerPort = 0;
+
+inline constexpr int kMaxNumAprilTags = 16;
+inline constexpr units::meter_t kTargetHeightToAmp = 6.5_in;
+inline constexpr units::meter_t kTargetHeightToSpeakers = 6.5_in;
 
 }  // namespace OperatorConstants

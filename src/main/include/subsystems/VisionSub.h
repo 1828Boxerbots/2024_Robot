@@ -10,6 +10,7 @@
 #include <frc/SmartDashboard/SmartDashboard.h>
 #include "subsystems/VisionData.h"
 
+#include "Constants.h"
 
 class VisionSub : public frc2::SubsystemBase 
 {
@@ -21,15 +22,26 @@ class VisionSub : public frc2::SubsystemBase
    */
   void Periodic() override;
 
+  /// @brief Initializes all hardware and library components
   void Init();
 
-  double GetTargYaw(int id);
-  double GetTargPitch(int id);
-  double GetTargSkew(int id);
-  double GetTargArea(int id);
+  /// @brief Determines from Periodic() data, which target ID is most likely to be used
+  /// @return the appropriate ID to center/move towards
   int GetTargID();
+
+  /// @brief Resets all vision data to 0.0's
   void ResetVisionData();
-  units::meter_t GetTargDist(int id);
+
+  /// @brief Determine's the distance from robot to target AprilTag
+  /// @return distance in meters to target AprilTag ID.
+  units::meter_t GetTargDist();
+
+  /// @brief get target info
+  /// @return 
+  double GetTargYaw();
+  double GetTargPitch();
+  double GetTargSkew();
+  double GetTargArea();
 
  private:
   //Initialize Camera:
@@ -37,16 +49,6 @@ class VisionSub : public frc2::SubsystemBase
 
   //Initialize Data Variables:
   int m_targetID = 0;
-  const int m_idRequested = 3;
-  const int m_idRequested2 = 4;
-  double m_targetSkew = 0.0;
-  double m_targetPitch = 0.0;
-  double m_targetYaw = 0.0;
-  double m_targetArea = 0.0;
-  double m_targetSkew2 = 0.0;
-  double m_targetPitch2 = 0.0;
-  double m_targetYaw2 = 0.0;
-  double m_targetArea2 = 0.0;
   int m_targetAmount = 0;
   int m_fiducialID1;
   int m_fiducialID2;
@@ -58,7 +60,8 @@ class VisionSub : public frc2::SubsystemBase
   const units::meter_t m_kTargetHeight = 4_in;
   const units::radian_t m_kCamPitch = 0.0_deg;
 
-  VisionData m_visionData[16];
+  /// @brief one data element per AprilTag
+  VisionData m_visionData[OperatorConstants::kMaxNumAprilTags];
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

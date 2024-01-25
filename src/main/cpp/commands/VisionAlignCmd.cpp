@@ -36,14 +36,13 @@ void VisionAlignCmd::Execute()
   }
   
   //No Target Check.
-  int id = m_pVisionSub->GetTargID();
-  if(id == 0)
+  if(m_pVisionSub->GetTargID() == 0)
   {
     m_isFinished = true;
     return;
   }
 
-  double yaw = m_pVisionSub->GetTargYaw(id);
+  double yaw = m_pVisionSub->GetTargYaw();
 
   if((yaw < m_deadZone) and (yaw > -m_deadZone))
   {

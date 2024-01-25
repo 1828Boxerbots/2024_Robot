@@ -44,9 +44,11 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
   {
     case 1:
       // position 2
+      return autos::Position2CmdGrp(&m_driveSub, &m_visionSub, &m_shooterSub);
       break;
     case 2:
       // position 3
+      return autos::Position3CmdGrp(&m_driveSub, &m_visionSub, &m_shooterSub);
       break;
     case 0:
     default:

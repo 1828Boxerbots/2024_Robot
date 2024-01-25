@@ -13,4 +13,6 @@
 namespace autos 
 {
     frc2::CommandPtr Position1CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub);
+    frc2::CommandPtr Position2CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub);
+    frc2::CommandPtr Position3CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub);
 }  // namespace autos

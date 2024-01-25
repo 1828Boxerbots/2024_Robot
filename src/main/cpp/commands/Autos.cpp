@@ -11,7 +11,7 @@
 frc2::CommandPtr autos::Position1CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub)
 {
   return frc2::SequentialCommandGroup(
-    //VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0.5, 0)                                  // look for AprilTag - ID=???
+    VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0)                                  // look for AprilTag - ID=???
     // , VisionFwdCmd(pVisionSub, pDriveSub, kOptDistToShoot, 1.0)              // go to optimal distance to shoot Speaker
     // , ShootCmd(pShooterSub, kOptDistShooterSpeed)                            // depends on 'kOptDistToShoot'
     // , TurnCmd(pDriveSub, XXX_deg)                                            // turn XX-deg to face note on ground (starting angle to look)
@@ -25,5 +25,18 @@ frc2::CommandPtr autos::Position1CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionS
     // , ShootCmd(pShooterSub, kOptDistShooterSpeed)                            // depends on 'kOptDistToShoot'
     // , TurnCmd(pDriveSub, XXX_deg)                                            // turn XX-deg to face to cross line
     // , ForwardCmd(pDriveSub, kOptDistToCrossLine, 1.0)                        // move forward to cross line
+  ).ToPtr();
+}
+
+frc2::CommandPtr autos::Position2CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub)
+{
+  return frc2::SequentialCommandGroup(
+    VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0)                                  // look for AprilTag - ID=???
+  ).ToPtr();
+}
+frc2::CommandPtr autos::Position3CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub)
+{
+  return frc2::SequentialCommandGroup(
+    VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0)                                  // look for AprilTag - ID=???
   ).ToPtr();
 }

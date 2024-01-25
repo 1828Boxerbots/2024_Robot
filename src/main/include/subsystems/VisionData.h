@@ -4,11 +4,15 @@
 
 #pragma once
 
+#include <units/length.h>
+
 struct VisionData 
 {
   VisionData();
-  void resetData();
+  void ResetData();
   double m_pitch;
   double m_yaw;
   double m_skew;
+  double m_area;
+  units::meter_t m_dist;
 };

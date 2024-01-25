@@ -4,12 +4,17 @@
 
 #include "subsystems/VisionData.h"
 
-VisionData::VisionData() = default;
+VisionData::VisionData()
+{
+    ResetData();
+}
 
-void VisionData::resetData()
+void VisionData::ResetData()
 {
     m_pitch = 0.0;
     m_skew = 0.0;
     m_yaw = 0.0;
+    m_area = 0.0;
+    m_dist = 0.0_in;
 }
 
