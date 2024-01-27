@@ -29,6 +29,7 @@ void RobotContainer::Init()
   m_shooterSub.Init();
   m_shooterSub.SetDefaultCommand(TeleopShootCmd(&m_driverController, &m_shooterSub)); //in finished code use driverController2
   m_loaderSub.Init();
+  m_LEDSub.Init();
 }
 
 void RobotContainer::ConfigureBindings() {

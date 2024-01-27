@@ -16,6 +16,9 @@
 
 namespace OperatorConstants 
 {
+// LED Strip(s)
+constexpr int PIXEL_COUNT = 60;
+
 //Drive:
 inline constexpr int kDriverControllerPort = 0;
 inline constexpr int kSymphonyDriveMotorIDR1 = 1; //Change value.
