@@ -10,6 +10,7 @@
 #include <rev/CANSparkMax.h> // from https://www.chiefdelphi.com/t/2024-software-download-links/448077.  use (https://software-metadata.revrobotics.com/REVLib-2024.json) file.
 #include "Constants.h"
 #include <frc/ADIS16448_IMU.h>
+#include <frc/AnalogPotentiometer.h>
 
 
 class DriveSub : public frc2::SubsystemBase 
@@ -54,37 +55,40 @@ class DriveSub : public frc2::SubsystemBase
   private:
   ///////////////////////////////////////////////////////////////////////////////
   // CAN Motors
-  ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlL1 {OperatorConstants::kSymphonyDriveMotorControlL1};
-  rev::CANSparkMax m_motorL1 {OperatorConstants::kSymphonyDriveMotorIDL1, rev::CANSparkMax::MotorType::kBrushed};
+  //ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlL1 {OperatorConstants::kSymphonyDriveMotorControlL1};
+  //rev::CANSparkMax m_motorL1 {OperatorConstants::kSymphonyDriveMotorIDL1, rev::CANSparkMax::MotorType::kBrushed};
+//
+  //ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlR1 {OperatorConstants::kSymphonyDriveMotorControlR1};
+  //rev::CANSparkMax m_motorR1 {OperatorConstants::kSymphonyDriveMotorIDR1, rev::CANSparkMax::MotorType::kBrushed};
+//
+  //ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlL2 {OperatorConstants::kSymphonyDriveMotorControlL2};
+  //rev::CANSparkMax m_motorL2 {OperatorConstants::kSymphonyDriveMotorIDL2, rev::CANSparkMax::MotorType::kBrushed};
+//
+  //ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlR2 {OperatorConstants::kSymphonyDriveMotorControlR2};
+  //rev::CANSparkMax m_motorR2 {OperatorConstants::kSymphonyDriveMotorIDR2, rev::CANSparkMax::MotorType::kBrushed};
 
-  ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlR1 {OperatorConstants::kSymphonyDriveMotorControlR1};
-  rev::CANSparkMax m_motorR1 {OperatorConstants::kSymphonyDriveMotorIDR1, rev::CANSparkMax::MotorType::kBrushed};
-
-  ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlL2 {OperatorConstants::kSymphonyDriveMotorControlL2};
-  rev::CANSparkMax m_motorL2 {OperatorConstants::kSymphonyDriveMotorIDL2, rev::CANSparkMax::MotorType::kBrushed};
-
-  ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_motorControlR2 {OperatorConstants::kSymphonyDriveMotorControlR2};
-  rev::CANSparkMax m_motorR2 {OperatorConstants::kSymphonyDriveMotorIDR2, rev::CANSparkMax::MotorType::kBrushed};
+  // Potentiometer Test
+  frc::AnalogPotentiometer m_Pot {0, 3600, 0};
 
   // encoders are part of CANSparkMax - keep private
-  inline rev::SparkRelativeEncoder GetEncoderL1()
-  {
-    return m_motorL1.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
-  }
-  inline rev::SparkRelativeEncoder GetEncoderL2()
-  {
-    return m_motorL2.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
-  }
-  inline rev::SparkRelativeEncoder GetEncoderR1()
-  {
-    return m_motorR1.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
-  }
-  inline rev::SparkRelativeEncoder GetEncoderR2()
-  {
-    return m_motorR2.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
-  }
+  //inline rev::SparkRelativeEncoder GetEncoderL1()
+  //{
+  //  return m_motorL1.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
+  //}
+  //inline rev::SparkRelativeEncoder GetEncoderL2()
+  //{
+  //  return m_motorL2.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
+  //}
+  //inline rev::SparkRelativeEncoder GetEncoderR1()
+  //{
+  //  return m_motorR1.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
+  //}
+  //inline rev::SparkRelativeEncoder GetEncoderR2()
+  //{
+  //  return m_motorR2.GetEncoder(rev::CANEncoder::EncoderType::kQuadrature, OperatorConstants::kSymphonyL1EncoderCounts);
+  //}
 
   ///////////////////////////////////////////////////////////////////////////////
   // IMU
-  frc::ADIS16448_IMU m_imu;
+  //frc::ADIS16448_IMU m_imu;
 };
