@@ -5,6 +5,11 @@ DriveSubsystem::DriveSubsystem()
     // NOTE: Currently does nothing
 }
 
+DriveSubsystem::~DriveSubsystem()
+{
+    // NOTE: Currently does nothing
+}
+
 void DriveSubsystem::Init()
 {
     // NOTE: Currently does nothing

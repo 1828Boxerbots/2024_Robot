@@ -10,5 +10,6 @@ enum CanID
     DRIVE_LEFT1 = 0,
     DRIVE_LEFT2 = 1,
     DRIVE_RIGHT1 = 2,
-    DRIVE_RIGHT2 = 3
+    DRIVE_RIGHT2 = 3,
+    INTAKE = 4,
 };
