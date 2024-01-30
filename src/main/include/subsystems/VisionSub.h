@@ -43,10 +43,17 @@ class VisionSub : public frc2::SubsystemBase
   double GetTargPitch();
   double GetTargSkew();
   double GetTargArea();
+  //
+  double GetYaw();
+  bool HasTargets();
+  double GetDistanceInMeters();
 
  private:
+  void Periodic2(); // delete me
+  
   //Initialize Camera:
   photon::PhotonCamera m_testCam{"TestCam1"};
+  units::length::meter_t GetTargetHeight(int id); // in meters
 
   //Initialize Data Variables:
   int m_targetID = 0;

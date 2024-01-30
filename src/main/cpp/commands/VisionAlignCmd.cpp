@@ -41,26 +41,27 @@ void VisionAlignCmd::Execute()
   }
   
   //No Target Check.
-  if(m_pVisionSub->GetTargID() == 0)
+  if(m_pVisionSub->HasTargets() == false)
   {
     m_isFinished = true;
     return;
   }
 
-  double yaw = m_pVisionSub->GetTargYaw();
-
+  // if at center, then stop
+  double yaw = m_pVisionSub->GetYaw();
   if((yaw < m_deadZone) and (yaw > -m_deadZone))
   {
     m_isFinished = true;
     return;
   }
   
-
+  // if target is left of robot
   if(yaw < 0.0)
   {
     //Turn left.
     m_pDriveSub->DriveTank(m_speed, -m_speed);
   }
+  // if target is right of robot
   else if(yaw > 0.0)
   {
     //Turn right.
