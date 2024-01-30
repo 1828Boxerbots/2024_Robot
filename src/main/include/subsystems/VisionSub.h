@@ -9,6 +9,7 @@
 #include <photon/PhotonCamera.h>
 #include <frc/SmartDashboard/SmartDashboard.h>
 #include "subsystems/VisionData.h"
+#include <frc/Timer.h>
 
 #include "Constants.h"
 
@@ -53,6 +54,9 @@ class VisionSub : public frc2::SubsystemBase
   int m_fiducialID1;
   int m_fiducialID2;
   int m_fiducialID3;
+
+  frc::Timer m_timer;
+  bool m_isPeriodicFinished = true;
     
   units::meter_t m_targetDist = 0.0_in;
   units::meter_t m_targetDist2 = 0.0_in;

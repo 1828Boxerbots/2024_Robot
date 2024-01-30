@@ -14,7 +14,16 @@ VisionSub::VisionSub()
 // This method will be called once per scheduler run
 void VisionSub::Periodic() 
 {
-    ResetVisionData();
+    double start = (double)m_timer.Get();
+
+    if(m_isPeriodicFinished == false)
+    {
+        return;
+    }
+
+    m_isPeriodicFinished = false;
+
+    // ResetVisionData();
 
     char prefix[250];
 
@@ -95,12 +104,22 @@ void VisionSub::Periodic()
             Util::Log("dist(m)", (double)m_visionData[ID-1].m_dist, prefix);
         }
     }
+
+    m_isPeriodicFinished = true;
+
+    double end = (double)m_timer.Get();
+
+    double timeDelta = (end - start);
+
+    frc::SmartDashboard::PutNumber("VisionSub - TimeDelta", timeDelta);
 }
 
 void VisionSub::Init()
 {
     // initialize Addressable LED lights
     // TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD 
+    m_timer.Reset();
+    m_timer.Start();
 }
 
 void VisionSub::ResetVisionData()

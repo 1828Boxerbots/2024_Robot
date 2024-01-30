@@ -29,6 +29,11 @@ void VisionAlignCmd::Initialize()
 // Called repeatedly when this Command is scheduled to run
 void VisionAlignCmd::Execute() 
 {
+
+  int heartBeat = 0;
+
+  frc::SmartDashboard::PutNumber("VisionAlignCmd - HB", heartBeat++);
+
   if(m_pVisionSub == nullptr or m_pDriveSub == nullptr)
   {
     m_isFinished = true;
