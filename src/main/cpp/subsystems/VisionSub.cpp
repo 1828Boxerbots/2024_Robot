@@ -2,6 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include <NetworkTables/NetworkTable.h>
 #include <units/length.h>
 #include "subsystems/VisionSub.h"
 #include "Util.h"
@@ -16,11 +17,13 @@ void VisionSub::Periodic()
 {
     double start = (double)m_timer.Get();
     
-    Util::Log("VS-yaw", GetYaw());
-    Util::Log("VS-dist(in meters)", (double)GetDistanceInMeters());
+    Util::Log("yaw", GetYaw(), GetName() );
+    Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
+
+    Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
 
     double total = (double)m_timer.Get() - start;
-    Util::Log("VS-yaw(time)", (int)(total*1000.0));
+    Util::Log("periodic(msec)", total*1000.0, GetName());
 }
 void VisionSub::Periodic2() 
 {
@@ -127,6 +130,8 @@ void VisionSub::Init()
     // TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD 
     m_timer.Reset();
     m_timer.Start();
+
+    InitNetworkTableData();
 }
 
 void VisionSub::ResetVisionData()
@@ -203,55 +208,76 @@ double VisionSub::GetYaw()
         return 0.0;
     }
     std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = result.GetTargets();
-    int id1;
-    int id2;
-    int id3;
+                                                                                // int id1;
+                                                                                // int id2;
+                                                                                // int id3;
 
-    switch(targets.size())
+    // find specific ID
+    int requiredID = 16; // TBD TBD
+    for(unsigned i=0; i<targets.size(); ++i)
     {
-        case 1:
-            return targets[0].GetYaw();
-        case 2:
-            id1 = targets[0].GetFiducialId();
-            id2 = targets[1].GetFiducialId();
-            // only use larger of ID's
-            if (id1 > id2)
-            {
-                return targets[0].GetYaw();
-            }
-            else
-            {
-                return targets[1].GetYaw();
-            }
-            break;
-        case 3:
-            id1 = targets[0].GetFiducialId();
-            id2 = targets[1].GetFiducialId();
-            id3 = targets[2].GetFiducialId();
-            // TBD - use greatest ID ??? TBD
-            if (id1 > id2 and id1 > id3         // is id1 largest
-                    and id1 < 16 and id1 >= 0)  // is ID valid
-            {
-                return targets[0].GetYaw();
-            }
-            else if (id2 > id1 and id2 > id3    // is id2 largest
-                    and id2 < 16 and id2 >= 0)  // is ID valid
-            {
-                return targets[1].GetYaw();
-            }
-            else if (id3 > id1 and id3 > id2    // is id3 largest
-                    and id3 < 16 and id3 >= 0)  // is ID valid
-            {
-                return targets[2].GetYaw();
-            }
-            break;
+        Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
+        Util::Log(std::string("Yaw #") + std::to_string(i), targets[i].GetYaw(), GetName());
+        if (targets[i].GetFiducialId() == requiredID)
+        {
+            double yaw = targets[i].GetYaw();
+            Util::Log("Final Yaw", targets[i].GetYaw(), GetName());
+            return yaw;
+        }
     }
+                                                                                // switch(targets.size())
+                                                                                // {
+                                                                                //     case 1:
+                                                                                //         return targets[0].GetYaw();
+                                                                                //     case 2:
+                                                                                //         id1 = targets[0].GetFiducialId();
+                                                                                //         id2 = targets[1].GetFiducialId();
+                                                                                //         // only use larger of ID's
+                                                                                //         if (id1 > id2)
+                                                                                //         {
+                                                                                //             return targets[0].GetYaw();
+                                                                                //         }
+                                                                                //         else
+                                                                                //         {
+                                                                                //             return targets[1].GetYaw();
+                                                                                //         }
+                                                                                //         break;
+                                                                                //     case 3:
+                                                                                //         id1 = targets[0].GetFiducialId();
+                                                                                //         id2 = targets[1].GetFiducialId();
+                                                                                //         id3 = targets[2].GetFiducialId();
+                                                                                //         // TBD - use greatest ID ??? TBD
+                                                                                //         if (id1 > id2 and id1 > id3         // is id1 largest
+                                                                                //                 and id1 < 16 and id1 >= 0)  // is ID valid
+                                                                                //         {
+                                                                                //             return targets[0].GetYaw();
+                                                                                //         }
+                                                                                //         else if (id2 > id1 and id2 > id3    // is id2 largest
+                                                                                //                 and id2 < 16 and id2 >= 0)  // is ID valid
+                                                                                //         {
+                                                                                //             return targets[1].GetYaw();
+                                                                                //         }
+                                                                                //         else if (id3 > id1 and id3 > id2    // is id3 largest
+                                                                                //                 and id3 < 16 and id3 >= 0)  // is ID valid
+                                                                                //         {
+                                                                                //             return targets[2].GetYaw();
+                                                                                //         }
+                                                                                //         break;
+                                                                                // }
     return 0.0;
 }
 
 bool VisionSub::HasTargets()
 {
     return m_testCam.GetLatestResult().HasTargets();
+}
+int VisionSub::NumTargets()
+{
+    if (m_testCam.GetLatestResult().HasTargets() == false)
+    {
+        return 0;
+    }
+    return m_testCam.GetLatestResult().GetTargets().size();
 }
 
 double VisionSub::GetDistanceInMeters()
@@ -263,51 +289,63 @@ double VisionSub::GetDistanceInMeters()
     }
     // get target info
     std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = result.GetTargets();
-    int id1;
-    int id2;
-    int id3;
-    double targetPitch = 0.0;
-    units::length::meter_t targetHeight = 0.0_m;
+                                                        // int id1;
+                                                        // int id2;
+                                                        // int id3;
 
-    switch(targets.size())
+    // find specific ID
+    const int requiredID = 16; // TBD TBD
+    for(unsigned i=0; i<targets.size(); ++i)
     {
-        case 1:
-            return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
-        case 2:
-            id1 = targets[0].GetFiducialId();
-            id2 = targets[1].GetFiducialId();
-            // only use larger of ID's
-            if (id1 > id2)
-            {
-                return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
-            }
-            else
-            {
-                return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[1].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[1].GetPitch());
-            }
-            break;
-        case 3:
-            id1 = targets[0].GetFiducialId();
-            id2 = targets[1].GetFiducialId();
-            id3 = targets[2].GetFiducialId();
-            // TBD - use greatest ID ??? TBD
-            if (id1 > id2 and id1 > id3         // is id1 largest
-                    and id1 < 16 and id1 >= 0)  // is ID valid
-            {
-                return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
-            }
-            else if (id2 > id1 and id2 > id3    // is id2 largest
-                    and id2 < 16 and id2 >= 0)  // is ID valid
-            {
-                return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[1].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[1].GetPitch());
-            }
-            else if (id3 > id1 and id3 > id2    // is id3 largest
-                    and id3 < 16 and id3 >= 0)  // is ID valid
-            {
-                return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[2].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[2].GetPitch());
-            }
-            break;
+        Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
+        double dist = (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[i].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[i].GetPitch());
+
+        Util::Log(std::string("Dist #") + std::to_string(i), dist, GetName());
+        if (targets[i].GetFiducialId() == requiredID)
+        {
+            Util::Log("Final Dist", dist, GetName());
+            return dist;
+        }
     }
+                                                        // switch(targets.size())
+                                                        // {
+                                                        //     case 1:
+                                                        //         return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
+                                                        //     case 2:
+                                                        //         id1 = targets[0].GetFiducialId();
+                                                        //         id2 = targets[1].GetFiducialId();
+                                                        //         // only use larger of ID's
+                                                        //         if (id1 > id2)
+                                                        //         {
+                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
+                                                        //         }
+                                                        //         else
+                                                        //         {
+                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[1].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[1].GetPitch());
+                                                        //         }
+                                                        //         break;
+                                                        //     case 3:
+                                                        //         id1 = targets[0].GetFiducialId();
+                                                        //         id2 = targets[1].GetFiducialId();
+                                                        //         id3 = targets[2].GetFiducialId();
+                                                        //         // TBD - use greatest ID ??? TBD
+                                                        //         if (id1 > id2 and id1 > id3         // is id1 largest
+                                                        //                 and id1 < 16 and id1 >= 0)  // is ID valid
+                                                        //         {
+                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
+                                                        //         }
+                                                        //         else if (id2 > id1 and id2 > id3    // is id2 largest
+                                                        //                 and id2 < 16 and id2 >= 0)  // is ID valid
+                                                        //         {
+                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[1].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[1].GetPitch());
+                                                        //         }
+                                                        //         else if (id3 > id1 and id3 > id2    // is id3 largest
+                                                        //                 and id3 < 16 and id3 >= 0)  // is ID valid
+                                                        //         {
+                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[2].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[2].GetPitch());
+                                                        //         }
+                                                        //         break;
+                                                        // }
     return 0.0;
 }
 units::length::meter_t VisionSub::GetTargetHeight(int id)
@@ -348,4 +386,40 @@ units::length::meter_t VisionSub::GetTargetHeight(int id)
             return 0.0_m;
     }
     return 0.0_m;
+}
+
+void VisionSub::InitNetworkTableData()
+{
+    std::string tableName = "photonlib";
+    std::string topic = "X";
+    std::string topicName = "/" + tableName + "/" + topic;
+
+    // https://docs.wpilib.org/en/stable/docs/software/networktables/tables-and-topics.html
+    nt::NetworkTableInstance inst = nt::NetworkTableInstance::GetDefault();
+
+    // get a topic from a NetworkTableInstance
+    // the topic name in this case is the full name
+    nt::DoubleTopic dblTopic = inst.GetDoubleTopic(topicName);
+
+    // get a topic from a NetworkTable
+    // the topic name in this case is the name within the table;
+    std::shared_ptr<nt::NetworkTable> table = inst.GetTable(tableName);
+    nt::DoubleTopic dblTopic2 = table->GetDoubleTopic(topic);
+
+    // get a type-specific topic from a generic Topic
+    nt::Topic genericTopic = inst.GetTopic(topicName);
+    nt::DoubleTopic dblTopic3{genericTopic};
+
+    // NOTE: dblTopic, dblTopic2, dblTopic3 should all have SAME value
+
+    // start subscribing; the return value must be retained.
+    // the parameter is the default value if no value is available when get() is called
+    m_dblSub = dblTopic.Subscribe(0.0);
+    m_dblSub2 = dblTopic2.Subscribe(0.0);
+    m_dblSub3 = dblTopic3.Subscribe(0.0);
+}
+double VisionSub::GetNetworkTableData()
+{
+    double dbl = m_dblSub.Get(-666.0);
+    return dbl;
 }

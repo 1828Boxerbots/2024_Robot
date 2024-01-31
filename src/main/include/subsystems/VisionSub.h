@@ -46,7 +46,11 @@ class VisionSub : public frc2::SubsystemBase
   //
   double GetYaw();
   bool HasTargets();
+  int NumTargets();
   double GetDistanceInMeters();
+
+  void InitNetworkTableData();
+  double GetNetworkTableData();
 
  private:
   void Periodic2(); // delete me
@@ -64,7 +68,7 @@ class VisionSub : public frc2::SubsystemBase
 
   frc::Timer m_timer;
   bool m_isPeriodicFinished = true;
-    
+
   units::meter_t m_targetDist = 0.0_in;
   units::meter_t m_targetDist2 = 0.0_in;
   const units::meter_t m_kCamHeight = 0.0625_ft;
@@ -73,6 +77,10 @@ class VisionSub : public frc2::SubsystemBase
 
   /// @brief one data element per AprilTag
   VisionData m_visionData[OperatorConstants::kMaxNumAprilTags];
+
+  nt::DoubleSubscriber m_dblSub;
+  nt::DoubleSubscriber m_dblSub2;
+  nt::DoubleSubscriber m_dblSub3;
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
