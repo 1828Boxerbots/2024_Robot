@@ -45,6 +45,7 @@ class VisionSub : public frc2::SubsystemBase
   double GetTargArea();
   //
   double GetYaw();
+  double GetBestYaw();
   bool HasTargets();
   int NumTargets();
   double GetDistanceInMeters();

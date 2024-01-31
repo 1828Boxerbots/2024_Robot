@@ -18,6 +18,7 @@ void VisionSub::Periodic()
     double start = (double)m_timer.Get();
     
     Util::Log("yaw", GetYaw(), GetName() );
+    Util::Log("yaw(best)", GetBestYaw(), GetName() );
     Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
 
     Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
@@ -200,6 +201,16 @@ int VisionSub::GetTargID()
     }
 }
 
+double VisionSub::GetBestYaw()
+{
+    photon::PhotonPipelineResult result = m_testCam.GetLatestResult();
+    if (result.HasTargets() == false)
+    {
+        return 0.0;
+    }
+    Util::Log("Best ID", result.GetBestTarget().GetFiducialId(), GetName());
+    return result.GetBestTarget().GetYaw();
+}
 double VisionSub::GetYaw()
 {
     photon::PhotonPipelineResult result = m_testCam.GetLatestResult();
@@ -207,6 +218,7 @@ double VisionSub::GetYaw()
     {
         return 0.0;
     }
+
     std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = result.GetTargets();
                                                                                 // int id1;
                                                                                 // int id2;
@@ -287,6 +299,7 @@ double VisionSub::GetDistanceInMeters()
     {
         return 0.0;
     }
+
     // get target info
     std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = result.GetTargets();
                                                         // int id1;
