@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/controller/PIDController.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -38,4 +39,10 @@ class VisionAlignCmd : public frc2::CommandHelper<frc2::Command, VisionAlignCmd>
   double m_targYaw =0.0;
   bool m_isFinished = false;
   const double kMinDeadZone = 0.1;
+
+  const double kProportionalGain = 0.1;
+  const double kIntegralGain = 0.0;
+  const double kDerivativeGain = 0.0;
+
+  frc::PIDController m_controller { kProportionalGain, kIntegralGain, kDerivativeGain };
 };
