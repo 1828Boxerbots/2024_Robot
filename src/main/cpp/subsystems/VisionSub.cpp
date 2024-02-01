@@ -17,7 +17,7 @@ void VisionSub::Periodic()
 {
     double start = (double)m_timer.Get();
     
-//    Util::Log("yaw", GetYaw(), GetName() );
+    Util::Log("yaw", GetYaw(), GetName() );
     Util::Log("yaw(best)", GetBestYaw(), GetName() );
 //    Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
 
@@ -225,11 +225,12 @@ double VisionSub::GetYaw()
                                                                                 // int id3;
 
     // find specific ID
-    int requiredID = 15; // TBD TBD
+    int requiredID = 1; // TBD TBD
     for(unsigned i=0; i<targets.size(); ++i)
     {
-        //Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
-        //Util::Log(std::string("Yaw #") + std::to_string(i), targets[i].GetYaw(), GetName());
+        Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
+        Util::Log(std::string("Yaw #") + std::to_string(i), targets[i].GetYaw(), GetName());
+
         if (targets[i].GetFiducialId() == requiredID)
         {
             double yaw = targets[i].GetYaw();
@@ -237,45 +238,6 @@ double VisionSub::GetYaw()
             return yaw;
         }
     }
-                                                                                // switch(targets.size())
-                                                                                // {
-                                                                                //     case 1:
-                                                                                //         return targets[0].GetYaw();
-                                                                                //     case 2:
-                                                                                //         id1 = targets[0].GetFiducialId();
-                                                                                //         id2 = targets[1].GetFiducialId();
-                                                                                //         // only use larger of ID's
-                                                                                //         if (id1 > id2)
-                                                                                //         {
-                                                                                //             return targets[0].GetYaw();
-                                                                                //         }
-                                                                                //         else
-                                                                                //         {
-                                                                                //             return targets[1].GetYaw();
-                                                                                //         }
-                                                                                //         break;
-                                                                                //     case 3:
-                                                                                //         id1 = targets[0].GetFiducialId();
-                                                                                //         id2 = targets[1].GetFiducialId();
-                                                                                //         id3 = targets[2].GetFiducialId();
-                                                                                //         // TBD - use greatest ID ??? TBD
-                                                                                //         if (id1 > id2 and id1 > id3         // is id1 largest
-                                                                                //                 and id1 < 16 and id1 >= 0)  // is ID valid
-                                                                                //         {
-                                                                                //             return targets[0].GetYaw();
-                                                                                //         }
-                                                                                //         else if (id2 > id1 and id2 > id3    // is id2 largest
-                                                                                //                 and id2 < 16 and id2 >= 0)  // is ID valid
-                                                                                //         {
-                                                                                //             return targets[1].GetYaw();
-                                                                                //         }
-                                                                                //         else if (id3 > id1 and id3 > id2    // is id3 largest
-                                                                                //                 and id3 < 16 and id3 >= 0)  // is ID valid
-                                                                                //         {
-                                                                                //             return targets[2].GetYaw();
-                                                                                //         }
-                                                                                //         break;
-                                                                                // }
     return 0.0;
 }
 
@@ -283,7 +245,7 @@ bool VisionSub::HasTargets()
 {
     return m_testCam.GetLatestResult().HasTargets();
 }
-int VisionSub::NumTargets()
+int VisionSub::NumValidTargets()
 {
     if (m_testCam.GetLatestResult().HasTargets() == false)
     {

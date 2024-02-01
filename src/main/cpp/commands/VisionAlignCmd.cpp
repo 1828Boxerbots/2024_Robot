@@ -45,12 +45,25 @@ void VisionAlignCmd::Execute()
   //No Target Check.
   if(m_pVisionSub->HasTargets() == false)
   {
+    // no targets
     m_isFinished = true;
     return;
   }
 
-  // if at center, then stop
+  if (m_pVisionSub->NumValidTargets() == 0)
+  {
+    // no targets
+    m_isFinished = true;
+    return;
+  }
+
   double yaw = m_pVisionSub->GetBestYaw();
+  if (m_pVisionSub->NumValidTargets() > 1)
+  {
+    yaw = m_pVisionSub->GetYaw();
+  }
+
+  // if at center, then stop
   if((yaw < m_deadZone) and (yaw > -m_deadZone))
   {
     m_isFinished = true;
