@@ -17,11 +17,11 @@ void VisionSub::Periodic()
 {
     double start = (double)m_timer.Get();
     
-    Util::Log("yaw", GetYaw(), GetName() );
+//    Util::Log("yaw", GetYaw(), GetName() );
     Util::Log("yaw(best)", GetBestYaw(), GetName() );
-    Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
+//    Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
 
-    Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
+//    Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
 
     double total = (double)m_timer.Get() - start;
     Util::Log("periodic(msec)", total*1000.0, GetName());
@@ -225,11 +225,11 @@ double VisionSub::GetYaw()
                                                                                 // int id3;
 
     // find specific ID
-    int requiredID = 16; // TBD TBD
+    int requiredID = 15; // TBD TBD
     for(unsigned i=0; i<targets.size(); ++i)
     {
-        Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
-        Util::Log(std::string("Yaw #") + std::to_string(i), targets[i].GetYaw(), GetName());
+        //Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
+        //Util::Log(std::string("Yaw #") + std::to_string(i), targets[i].GetYaw(), GetName());
         if (targets[i].GetFiducialId() == requiredID)
         {
             double yaw = targets[i].GetYaw();
@@ -307,7 +307,7 @@ double VisionSub::GetDistanceInMeters()
                                                         // int id3;
 
     // find specific ID
-    const int requiredID = 16; // TBD TBD
+    const int requiredID = 15; // TBD TBD
     for(unsigned i=0; i<targets.size(); ++i)
     {
         Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
