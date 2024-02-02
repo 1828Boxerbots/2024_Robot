@@ -4,6 +4,7 @@
 
 #include <NetworkTables/NetworkTable.h>
 #include <units/length.h>
+#include <string>
 #include "subsystems/VisionSub.h"
 #include "Util.h"
 
@@ -19,186 +20,22 @@ void VisionSub::Periodic()
     
     Util::Log("yaw", GetYaw(), GetName() );
     Util::Log("yaw(best)", GetBestYaw(), GetName() );
-//    Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
+    Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
 
-//    Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
+    Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
 
     double total = (double)m_timer.Get() - start;
     Util::Log("periodic(msec)", total*1000.0, GetName());
-}
-void VisionSub::Periodic2() 
-{
-    double start = (double)m_timer.Get();
-
-    if(m_isPeriodicFinished == false)
-    {
-        return;
-    }
-
-    m_isPeriodicFinished = false;
-
-    ResetVisionData();
-
-    char prefix[250];
-
-    photon::PhotonPipelineResult currentResult = m_testCam.GetLatestResult();
-    bool seeTargets = currentResult.HasTargets();
-    Util::Log("See Targets", seeTargets, GetName());
-
-    //Check if Targets are Present:
-    if(seeTargets == true)
-    {
-        //Get Total Targets Camera Sees:
-        std::span<const photon::PhotonTrackedTarget, 4294967295U> targetArray = currentResult.GetTargets();
-
-        int numTargets = (int)targetArray.size();
-        Util::Log("numTargets", numTargets, GetName());
-
-        //Find Requested Target:
-        for(int i = 0; i < numTargets; i++)
-        {
-
-            int ID = targetArray[i].GetFiducialId();
-            Util::Log("ID", ID, prefix);
-
-            sprintf(prefix, "%s target #%d ", GetName().c_str(), i);
-
-            // there can only be three possible conditions:  1 target, 2 targets,  3 targets
-            // set appropriate ID to each targets
-            switch(i)
-            {
-                case 0:
-                m_fiducialID1 = ID;
-                Util::Log("fiducialID1", ID, prefix);
-                break;
-
-                case 1:
-                m_fiducialID2 = ID;
-                Util::Log("fiducialID2", ID, prefix);
-                break;
-
-                case 2:
-                m_fiducialID3 = ID;
-                Util::Log("fiducialID3", ID, prefix);
-                break;
-            }
-
-            // yaw
-            m_visionData[ID-1].m_yaw = targetArray[i].GetYaw();
-            Util::Log("yaw", m_visionData[ID-1].m_yaw, prefix);
-
-            // pitch
-            double targetPitch  = targetArray[i].GetPitch();
-            m_visionData[ID-1].m_pitch = targetPitch;
-            Util::Log("pitch", targetPitch, prefix);
-
-            // skew
-             m_visionData[ID-1].m_skew = targetArray[i].GetSkew();
-             Util::Log("pitch", m_visionData[ID-1].m_skew, prefix);
-
-            // area
-            m_visionData[ID-1].m_area = targetArray[i].GetArea();
-            Util::Log("area", m_visionData[ID-1].m_area, prefix);
-
-            // distance to target AprilTag
-            units::meter_t targetHeight = OperatorConstants::kTargetHeightToAmp; // if only one target, we are at AMP
-            switch (m_targetAmount)
-            {
-                case 2:
-                    targetHeight = OperatorConstants::kTargetHeightToSpeakers; // if two targets, we are at SPEAKERS
-                    break;
-                case 3:
-                    targetHeight = OperatorConstants::kTargetHeightToSpeakers; // TBD
-                    break;
-            }
-            m_visionData[ID-1].m_dist = photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, targetHeight, m_kCamPitch, (units::degree_t)targetPitch);
-            Util::Log("dist(m)", (double)m_visionData[ID-1].m_dist, prefix);
-        }
-    }
-
-    m_isPeriodicFinished = true;
-
-    double end = (double)m_timer.Get();
-
-    double timeDelta = (end - start);
-
-    frc::SmartDashboard::PutNumber("VisionSub - TimeDelta", timeDelta);
 }
 
 void VisionSub::Init()
 {
     // initialize Addressable LED lights
-    // TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD TBD 
+
     m_timer.Reset();
     m_timer.Start();
 
-    InitNetworkTableData();
-}
-
-void VisionSub::ResetVisionData()
-{
-    for (int i = 0; i < OperatorConstants::kMaxNumAprilTags; i++)
-    {
-        m_visionData[i].ResetData();
-    }
-}
-
-units::meter_t VisionSub::GetTargDist()
-{
-    int id = GetTargID();
-    return m_visionData[ id - 1 ].m_dist;
-}
-
-double VisionSub::GetTargYaw()
-{
-    int id = GetTargID();
-    return m_visionData[ id - 1 ].m_yaw;
-}
-
-double VisionSub::GetTargPitch()
-{
-    int id = GetTargID();
-    return m_visionData[ id - 1 ].m_pitch;
-}
-
-double VisionSub::GetTargSkew()
-{
-    int id = GetTargID();
-    return m_visionData[ id - 1 ].m_skew;
-}
-
-double VisionSub::GetTargArea()
-{
-    int id = GetTargID();
-    return m_visionData[ id - 1 ].m_area;
-}
-
-int VisionSub::GetTargID()
-{
-    switch(m_targetAmount)
-    {
-        case 1:
-        return m_fiducialID1;
-
-        case 2:
-        if(m_fiducialID1 > m_fiducialID2)
-        {
-            return m_fiducialID1;
-        }
-        else
-        {
-            return m_fiducialID2;
-        }
-
-        break;
-
-        case 3:
-        return m_fiducialID1;
-        //TBD
-
-        default:
-        return 0;
-    }
+    InitNetworkTableData(); // TBD TBD TBD TBD TBD TBD TBD TBD TBD
 }
 
 double VisionSub::GetBestYaw()
@@ -211,6 +48,7 @@ double VisionSub::GetBestYaw()
     Util::Log("Best ID", result.GetBestTarget().GetFiducialId(), GetName());
     return result.GetBestTarget().GetYaw();
 }
+
 double VisionSub::GetYaw()
 {
     photon::PhotonPipelineResult result = m_testCam.GetLatestResult();
@@ -219,22 +57,37 @@ double VisionSub::GetYaw()
         return 0.0;
     }
 
-    std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = result.GetTargets();
-                                                                                // int id1;
-                                                                                // int id2;
-                                                                                // int id3;
+    int id1;
+    int id2;
+    int numTargets = NumValidTargets(&id1, &id2);
+    if (numTargets == 0)
+    {
+        // no VALID targets found
+        return 0.0;
+    }
 
     // find specific ID
-    int requiredID = 1; // TBD TBD
+    if (numTargets == 1)
+    {
+        return GetBestYaw();
+    }
+
+    int requiredID = id1;
+    if (id2 > id1)
+    {
+        // required ID to focus on is the larger ID
+        requiredID = id2;
+    }
+
+    // get LatestResults again
+    std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = m_testCam.GetLatestResult().GetTargets();
+
     for(unsigned i=0; i<targets.size(); ++i)
     {
-        Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
-        Util::Log(std::string("Yaw #") + std::to_string(i), targets[i].GetYaw(), GetName());
-
         if (targets[i].GetFiducialId() == requiredID)
         {
             double yaw = targets[i].GetYaw();
-            Util::Log("Final Yaw", targets[i].GetYaw(), GetName());
+            Util::Log("Final Yaw", yaw, GetName());
             return yaw;
         }
     }
@@ -246,7 +99,7 @@ bool VisionSub::HasTargets()
     return m_testCam.GetLatestResult().HasTargets();
 }
 
-int VisionSub::NumValidTargets()
+int VisionSub::NumValidTargets(int *pTarget1Id, int *pTarget2Id)
 {
     int targValidCount = 0;
 
@@ -257,13 +110,24 @@ int VisionSub::NumValidTargets()
 
     std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = m_testCam.GetLatestResult().GetTargets();
 
-    for(int i = 0; i < targets.size(); i++)
+    for(unsigned i = 0; i < targets.size(); i++)
     {        
         int targID = targets[i].GetFiducialId();
 
-        if(targID > 0 and targID <= 16)
+        // valid target ID's are from 1 thru 16.
+        if(targID >= 1 and targID <= m_kMaxTargetId)
         {
             targValidCount++;
+
+            // output ID #'s
+            if (targValidCount == 1 and pTarget1Id != nullptr)
+            {
+                *pTarget1Id = targets[i].GetFiducialId();
+            }
+            else if (targValidCount == 2 and pTarget2Id != nullptr)
+            {
+                *pTarget2Id = targets[i].GetFiducialId();
+            }
         }
     }
 
@@ -280,9 +144,6 @@ double VisionSub::GetDistanceInMeters()
 
     // get target info
     std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = result.GetTargets();
-                                                        // int id1;
-                                                        // int id2;
-                                                        // int id3;
 
     // find specific ID
     const int requiredID = 15; // TBD TBD
@@ -298,91 +159,54 @@ double VisionSub::GetDistanceInMeters()
             return dist;
         }
     }
-                                                        // switch(targets.size())
-                                                        // {
-                                                        //     case 1:
-                                                        //         return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
-                                                        //     case 2:
-                                                        //         id1 = targets[0].GetFiducialId();
-                                                        //         id2 = targets[1].GetFiducialId();
-                                                        //         // only use larger of ID's
-                                                        //         if (id1 > id2)
-                                                        //         {
-                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
-                                                        //         }
-                                                        //         else
-                                                        //         {
-                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[1].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[1].GetPitch());
-                                                        //         }
-                                                        //         break;
-                                                        //     case 3:
-                                                        //         id1 = targets[0].GetFiducialId();
-                                                        //         id2 = targets[1].GetFiducialId();
-                                                        //         id3 = targets[2].GetFiducialId();
-                                                        //         // TBD - use greatest ID ??? TBD
-                                                        //         if (id1 > id2 and id1 > id3         // is id1 largest
-                                                        //                 and id1 < 16 and id1 >= 0)  // is ID valid
-                                                        //         {
-                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[0].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[0].GetPitch());
-                                                        //         }
-                                                        //         else if (id2 > id1 and id2 > id3    // is id2 largest
-                                                        //                 and id2 < 16 and id2 >= 0)  // is ID valid
-                                                        //         {
-                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[1].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[1].GetPitch());
-                                                        //         }
-                                                        //         else if (id3 > id1 and id3 > id2    // is id3 largest
-                                                        //                 and id3 < 16 and id3 >= 0)  // is ID valid
-                                                        //         {
-                                                        //             return (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[2].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[2].GetPitch());
-                                                        //         }
-                                                        //         break;
-                                                        // }
     return 0.0;
 }
+
 units::length::meter_t VisionSub::GetTargetHeight(int id)
 {
+    // for given target-ID, return height (needed for distance calculation)
     switch(id)
     {
         case 1:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 2:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 3:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 4:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 5:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 6:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 7:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 8:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 9:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 10:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 11:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 12:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 13:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 14:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 15:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
         case 16:
-            return 0.0_m;
+            return 0.0_m; // TBD TBD  look at field specs from Game Manual
     }
     return 0.0_m;
 }
 
 void VisionSub::InitNetworkTableData()
 {
-    std::string tableName = "photonlib";
-    std::string topic = "X";
+    std::string tableName = "photonvision";
+    std::string topic = m_cameraName + "/targetYaw"; // why doesn't m_testCam.GetCameraName() work?
     std::string topicName = "/" + tableName + "/" + topic;
 
     // https://docs.wpilib.org/en/stable/docs/software/networktables/tables-and-topics.html
@@ -412,5 +236,10 @@ void VisionSub::InitNetworkTableData()
 double VisionSub::GetNetworkTableData()
 {
     double dbl = m_dblSub.Get(-666.0);
+    Util::Log("netTable topic1 yaw", dbl, GetName());
+    dbl = m_dblSub2.Get(-777.0);
+    Util::Log("netTable topic2 yaw", dbl, GetName());
+    dbl = m_dblSub3.Get(-888.0);
+    Util::Log("netTable topic3 yaw", dbl, GetName());
     return dbl;
 }

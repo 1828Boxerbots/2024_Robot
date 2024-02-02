@@ -8,8 +8,8 @@
 #include <photon/PhotonUtils.h>
 #include <photon/PhotonCamera.h>
 #include <frc/SmartDashboard/SmartDashboard.h>
-#include "subsystems/VisionData.h"
 #include <frc/Timer.h>
+#include <string>
 
 #include "Constants.h"
 
@@ -37,52 +37,61 @@ class VisionSub : public frc2::SubsystemBase
   /// @return distance in meters to target AprilTag ID.
   units::meter_t GetTargDist();
 
-  /// @brief get target info
-  /// @return 
-  double GetTargYaw();
-  double GetTargPitch();
-  double GetTargSkew();
-  double GetTargArea();
-  //
+  /// @brief returns YAW of VALID target found.  if more than one target, calculate best ID
+  /// @return YAW value (in degrees)
   double GetYaw();
+
+  /// @brief returns YAW of BestTarget found
+  /// @return YAW value (in degrees) of BestTarget found
   double GetBestYaw();
+
+  /// @brief returns if there are ANY targets found in FOV
+  /// @return TRUE=one or more targets found.  FALSE=no targets found
   bool HasTargets();
-  int NumValidTargets();
+
+  /// @brief returns number of VALID targets (where ID is >=1 and <=16)
+  /// @param pTarget1Id output parameter for ID of aprilTag #1
+  /// @param pTarget2Id output parameter for ID of aprilTag #1
+  /// @return quantity of targets found, within ( >=1 and <=16 )
+  int NumValidTargets(int *pTarget1Id = nullptr, int *pTarget2Id = nullptr);
+
+  /// @brief gets distance to target
+  /// @return distance to target in meters
   double GetDistanceInMeters();
 
+  // NETWORK TABLE TEST ///////////////////////////////////////////////////////
+  // TBD TBD TBD - test only
+  /// @brief initializes data for network table data acquisition
   void InitNetworkTableData();
+
+  /// @brief returns network data from subscriptions
+  /// @return value for given data
   double GetNetworkTableData();
+  // NETWORK TABLE TEST ///////////////////////////////////////////////////////
 
  private:
-  void Periodic2(); // delete me
-  
-  //Initialize Camera:
-  photon::PhotonCamera m_testCam{"TestCam1"};
+  /// @brief returns target height (center of aprilTag), for given April-Tag ID
+  /// @param id = April-Tag ID
+  /// @return height of target, from robot (Symphony) drawings
   units::length::meter_t GetTargetHeight(int id); // in meters
+  
+  // Components (e.g. motor controllers and sensors) should generally be
+  // declared private and exposed only through public methods.
 
-  //Initialize Data Variables:
-  int m_targetID = 0;
-  int m_targetAmount = 0;
-  int m_fiducialID1;
-  int m_fiducialID2;
-  int m_fiducialID3;
+  //Initialize Camera:
+  const std::string m_cameraName = "TestCam1";
+  photon::PhotonCamera m_testCam{m_cameraName};
 
   frc::Timer m_timer;
-  bool m_isPeriodicFinished = true;
 
-  units::meter_t m_targetDist = 0.0_in;
-  units::meter_t m_targetDist2 = 0.0_in;
-  const units::meter_t m_kCamHeight = 0.0625_ft;
-  const units::meter_t m_kTargetHeight = 4_in;
-  const units::radian_t m_kCamPitch = 0.0_deg;
+  const units::meter_t m_kCamHeight = 0.0625_ft;  // TBD TBD - need actual robot specs
+  const units::meter_t m_kTargetHeight = 4_in;    // TBD TBD - need actual robot specs
+  const units::radian_t m_kCamPitch = 0.0_deg;    // TBD TBD - need actual robot specs
+  const int m_kMaxTargetId = 16;
 
-  /// @brief one data element per AprilTag
-  VisionData m_visionData[OperatorConstants::kMaxNumAprilTags];
-
+  // NETWORK TABLE TEST ///////////////////////////////////////////////////////
   nt::DoubleSubscriber m_dblSub;
   nt::DoubleSubscriber m_dblSub2;
   nt::DoubleSubscriber m_dblSub3;
-
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
+  // NETWORK TABLE TEST ///////////////////////////////////////////////////////
 };
