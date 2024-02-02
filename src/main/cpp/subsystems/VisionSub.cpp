@@ -245,13 +245,29 @@ bool VisionSub::HasTargets()
 {
     return m_testCam.GetLatestResult().HasTargets();
 }
+
 int VisionSub::NumValidTargets()
 {
+    int targValidCount = 0;
+
     if (m_testCam.GetLatestResult().HasTargets() == false)
     {
         return 0;
     }
-    return m_testCam.GetLatestResult().GetTargets().size();
+
+    std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = m_testCam.GetLatestResult().GetTargets();
+
+    for(int i = 0; i < targets.size(); i++)
+    {        
+        int targID = targets[i].GetFiducialId();
+
+        if(targID > 0 and targID <= 16)
+        {
+            targValidCount++;
+        }
+    }
+
+    return targValidCount;
 }
 
 double VisionSub::GetDistanceInMeters()
