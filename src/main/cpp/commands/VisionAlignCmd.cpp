@@ -26,15 +26,17 @@ VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, doubl
 // Called when the command is initially scheduled.
 void VisionAlignCmd::Initialize() 
 {
+  m_isFinished = false;
 }
 
 // Called repeatedly when this Command is scheduled to run
 void VisionAlignCmd::Execute() 
 {
 
-  int heartBeat = 0;
+  static int heartBeat = 0;
 
   Util::Log("HB", heartBeat++, GetName());
+
 
   if(m_pVisionSub == nullptr or m_pDriveSub == nullptr)
   {
@@ -45,15 +47,18 @@ void VisionAlignCmd::Execute()
   //No Target Check.
   if(m_pVisionSub->HasTargets() == false)
   {
+
+    Util::Log("exit reason", "HasTarget is false", GetName());
     // no targets
-    m_isFinished = true;
+    //m_isFinished = true;
     return;
   }
 
   if (m_pVisionSub->NumValidTargets() == 0)
   {
+        Util::Log("exit reason", "numValidTargets is 0", GetName());
     // no targets
-    m_isFinished = true;
+   // m_isFinished = true;
     return;
   }
 
@@ -63,9 +68,12 @@ void VisionAlignCmd::Execute()
     yaw = m_pVisionSub->GetYaw();
   }
 
+  Util::Log("yaw", yaw, GetName());
+
   // if at center, then stop
   if((yaw < m_deadZone) and (yaw > -m_deadZone))
   {
+    Util::Log("exit reason", "Deadzone is hit", GetName());
     m_isFinished = true;
     return;
   }
@@ -74,6 +82,7 @@ void VisionAlignCmd::Execute()
   speed = m_controller.Calculate(yaw, m_deadZone);
   Util::Log("pidSpeed", speed, GetName());
 
+  Util::Log("speed", m_speed, GetName());
   // if target is left of robot
   if(yaw < 0.0)
   {
@@ -90,6 +99,7 @@ void VisionAlignCmd::Execute()
     //Turn right.
     m_pDriveSub->DriveTank(-m_speed, m_speed);
   }
+
 }
 
 
