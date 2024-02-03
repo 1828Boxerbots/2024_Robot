@@ -18,8 +18,6 @@ void VisionSub::Periodic()
 {
     double start = (double)m_timer.Get();
     
-    Util::Log("yaw", GetYaw(), GetName() );
-    Util::Log("yaw(best)", GetBestYaw(), GetName() );
     Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
 
     Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
@@ -45,7 +43,6 @@ double VisionSub::GetBestYaw()
     {
         return 0.0;
     }
-    Util::Log("Best ID", result.GetBestTarget().GetFiducialId(), GetName());
     return result.GetBestTarget().GetYaw();
 }
 
@@ -87,7 +84,6 @@ double VisionSub::GetYaw()
         if (targets[i].GetFiducialId() == requiredID)
         {
             double yaw = targets[i].GetYaw();
-            Util::Log("Final Yaw", yaw, GetName());
             return yaw;
         }
     }
