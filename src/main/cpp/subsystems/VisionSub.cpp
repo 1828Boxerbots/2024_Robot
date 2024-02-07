@@ -56,7 +56,9 @@ double VisionSub::GetYaw()
 
     int id1;
     int id2;
-    int numTargets = NumValidTargets(&id1, &id2);
+    double yaw1;
+    double yaw2;
+    int numTargets = NumValidTargets(&id1, &id2, &yaw1, &yaw2);
     if (numTargets == 0)
     {
         // no VALID targets found
@@ -66,26 +68,13 @@ double VisionSub::GetYaw()
     // find specific ID
     if (numTargets == 1)
     {
-        return GetBestYaw();
+        return yaw1;
     }
 
-    int requiredID = id1;
     if (id2 > id1)
     {
         // required ID to focus on is the larger ID
-        requiredID = id2;
-    }
-
-    // get LatestResults again
-    std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = m_testCam.GetLatestResult().GetTargets();
-
-    for(unsigned i=0; i<targets.size(); ++i)
-    {
-        if (targets[i].GetFiducialId() == requiredID)
-        {
-            double yaw = targets[i].GetYaw();
-            return yaw;
-        }
+        return yaw2;
     }
     return 0.0;
 }
@@ -95,7 +84,7 @@ bool VisionSub::HasTargets()
     return m_testCam.GetLatestResult().HasTargets();
 }
 
-int VisionSub::NumValidTargets(int *pTarget1Id, int *pTarget2Id)
+int VisionSub::NumValidTargets(int *pTarget1Id, int *pTarget2Id, double *pYaw1, double *pYaw2)
 {
     int targValidCount = 0;
 
@@ -115,14 +104,16 @@ int VisionSub::NumValidTargets(int *pTarget1Id, int *pTarget2Id)
         {
             targValidCount++;
 
-            // output ID #'s
+            // output ID #'s and yaw's
             if (targValidCount == 1 and pTarget1Id != nullptr)
             {
                 *pTarget1Id = targets[i].GetFiducialId();
+                *pYaw1 = m_testCam.GetLatestResult().GetBestTarget().GetYaw();
             }
             else if (targValidCount == 2 and pTarget2Id != nullptr)
             {
                 *pTarget2Id = targets[i].GetFiducialId();
+                *pYaw2 = targets[i].GetYaw();
             }
         }
     }
@@ -153,6 +144,56 @@ double VisionSub::GetDistanceInMeters()
         {
             Util::Log("Final Dist", dist, GetName());
             return dist;
+        }
+    }
+    return 0.0;
+}
+
+double VisionSub::GetDistanceInInches()
+{
+    photon::PhotonPipelineResult result = m_testCam.GetLatestResult();
+    if (result.HasTargets() == false)
+    {
+        return 0.0;
+    }
+
+    int id1;
+    int id2;
+    int numTargets = NumValidTargets(&id1, &id2);
+
+    if (numTargets == 0)
+    {
+        // no VALID targets found
+        return 0.0;
+    }
+
+        // get target info
+    std::span<const photon::PhotonTrackedTarget, 4294967295U> targets = result.GetTargets();
+
+    int requiredID = 0; // TBD TBD
+    // find specific ID
+    if (numTargets == 1)
+    {
+        requiredID = id1;
+    }
+
+    if (id2 > id1)
+    {
+        // required ID to focus on is the larger ID
+        requiredID = id2;
+    }
+    
+    for(unsigned i=0; i<targets.size(); ++i)
+    {
+        Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
+        units::inch_t dist = (units::inch_t)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[i].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[i].GetPitch());
+        double distInch = (double)dist; // Convert inches to double;.
+
+        Util::Log(std::string("distInch #") + std::to_string(i), distInch, GetName());
+        if (targets[i].GetFiducialId() == requiredID)
+        {
+            Util::Log("Final distInch", distInch, GetName());
+            return distInch;
         }
     }
     return 0.0;

@@ -51,13 +51,17 @@ class VisionSub : public frc2::SubsystemBase
 
   /// @brief returns number of VALID targets (where ID is >=1 and <=16)
   /// @param pTarget1Id output parameter for ID of aprilTag #1
-  /// @param pTarget2Id output parameter for ID of aprilTag #1
+  /// @param pTarget2Id output parameter for ID of aprilTag #2
+  /// @param pYaw1 output parameter for yaw of aprilTag #1
+  /// @param pYaw2 output parameter for yaw of aprilTag #2
   /// @return quantity of targets found, within ( >=1 and <=16 )
-  int NumValidTargets(int *pTarget1Id = nullptr, int *pTarget2Id = nullptr);
+  int NumValidTargets(int *pTarget1Id = nullptr, int *pTarget2Id = nullptr, double *pYaw1 = nullptr, double *pYaw2 = nullptr);
 
   /// @brief gets distance to target
   /// @return distance to target in meters
   double GetDistanceInMeters();
+  double GetDistanceInInches();
+
 
   // NETWORK TABLE TEST ///////////////////////////////////////////////////////
   // TBD TBD TBD - test only
