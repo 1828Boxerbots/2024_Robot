@@ -18,7 +18,7 @@ void VisionSub::Periodic()
 {
     double start = (double)m_timer.Get();
     
-    Util::Log("dist(in meters)", (double)GetDistanceInMeters(), GetName());
+    Util::Log("dist(in inches)", (double)GetDistanceInInches(), GetName());
 
     Util::Log("NetworkTableData", GetNetworkTableData(), GetName());
 
@@ -105,12 +105,12 @@ int VisionSub::NumValidTargets(int *pTarget1Id, int *pTarget2Id, double *pYaw1, 
             targValidCount++;
 
             // output ID #'s and yaw's
-            if (targValidCount == 1 and pTarget1Id != nullptr)
+            if (targValidCount == 1 and pTarget1Id != nullptr and pYaw1 != nullptr)
             {
                 *pTarget1Id = targets[i].GetFiducialId();
                 *pYaw1 = m_testCam.GetLatestResult().GetBestTarget().GetYaw();
             }
-            else if (targValidCount == 2 and pTarget2Id != nullptr)
+            else if (targValidCount == 2 and pTarget2Id != nullptr and pYaw2 != nullptr)
             {
                 *pTarget2Id = targets[i].GetFiducialId();
                 *pYaw2 = targets[i].GetYaw();
@@ -137,7 +137,7 @@ double VisionSub::GetDistanceInMeters()
     for(unsigned i=0; i<targets.size(); ++i)
     {
         Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
-        double dist = (double)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[i].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[i].GetPitch());
+        double dist = (double)((units::inch_t)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, (units::inch_t)44.9375, m_kCamPitch, (units::degree_t)targets[i].GetPitch()));
 
         Util::Log(std::string("Dist #") + std::to_string(i), dist, GetName());
         if (targets[i].GetFiducialId() == requiredID)
@@ -186,7 +186,7 @@ double VisionSub::GetDistanceInInches()
     for(unsigned i=0; i<targets.size(); ++i)
     {
         Util::Log(std::string("ID #") + std::to_string(i), targets[i].GetFiducialId(), GetName());
-        units::inch_t dist = (units::inch_t)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, GetTargetHeight(targets[i].GetFiducialId()), m_kCamPitch, (units::degree_t)targets[i].GetPitch());
+        units::inch_t dist = (units::inch_t)photon::PhotonUtils::CalculateDistanceToTarget (m_kCamHeight, m_kTargetHeight, m_kCamPitch, (units::degree_t)targets[i].GetPitch());
         double distInch = (double)dist; // Convert inches to double;.
 
         Util::Log(std::string("distInch #") + std::to_string(i), distInch, GetName());

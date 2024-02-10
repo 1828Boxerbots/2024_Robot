@@ -88,8 +88,8 @@ class VisionSub : public frc2::SubsystemBase
 
   frc::Timer m_timer;
 
-  const units::meter_t m_kCamHeight = 0.0625_ft;  // TBD TBD - need actual robot specs
-  const units::meter_t m_kTargetHeight = 4_in;    // TBD TBD - need actual robot specs
+  const units::meter_t m_kCamHeight = 34.9416666667_in;  // TBD TBD - need actual robot specs
+  const units::meter_t m_kTargetHeight = 49.733333333_in;    // TBD TBD - need actual robot specs
   const units::radian_t m_kCamPitch = 0.0_deg;    // TBD TBD - need actual robot specs
   const int m_kMaxTargetId = 16;
 
