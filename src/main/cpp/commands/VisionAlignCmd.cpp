@@ -41,12 +41,14 @@ void VisionAlignCmd::Execute()
   if(m_pVisionSub->HasTargets() == false)
   {
     // no targets
+    m_pDriveSub->DriveTank(0.0, 0.0);
     return;
   }
 
   if (m_pVisionSub->NumValidTargets() == 0)
   {
     // no targets
+    m_pDriveSub->DriveTank(0.0, 0.0);
     return;
   }
 
@@ -60,6 +62,7 @@ void VisionAlignCmd::Execute()
   if((yaw < m_deadZone) and (yaw > -m_deadZone))
   {
     //m_isFinished = true;
+    m_pDriveSub->DriveTank(0.0, 0.0);
     return;
   }
   
