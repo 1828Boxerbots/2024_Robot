@@ -73,6 +73,8 @@ class VisionSub : public frc2::SubsystemBase
   double GetNetworkTableData();
   // NETWORK TABLE TEST ///////////////////////////////////////////////////////
 
+  double CalculateDeadZone(double distance1, double calcAngle1, double distance2, double calcAngle2);
+
  private:
   /// @brief returns target height (center of aprilTag), for given April-Tag ID
   /// @param id = April-Tag ID

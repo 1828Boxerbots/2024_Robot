@@ -31,12 +31,12 @@ frc2::CommandPtr autos::Position1CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionS
 frc2::CommandPtr autos::Position2CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub)
 {
   return frc2::SequentialCommandGroup(
-    VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0)                                  // look for AprilTag - ID=???
+  //  VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0)                                  // look for AprilTag - ID=???
   ).ToPtr();
 }
 frc2::CommandPtr autos::Position3CmdGrp(DriveSub* pDriveSub, VisionSub *pVisionSub, ShooterSub *pShooterSub)
 {
   return frc2::SequentialCommandGroup(
-    VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0)                                  // look for AprilTag - ID=???
+   // VisionAlignCmd(pVisionSub, pDriveSub, 0.5, 0)                                  // look for AprilTag - ID=???
   ).ToPtr();
 }

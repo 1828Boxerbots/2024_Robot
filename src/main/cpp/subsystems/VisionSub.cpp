@@ -240,6 +240,35 @@ units::length::meter_t VisionSub::GetTargetHeight(int id)
     return 0.0_m;
 }
 
+double VisionSub::CalculateDeadZone(double distance1, double calcAngle1, double distance2, double calcAngle2)
+{
+    double slope = 0.0;
+    double yIntercept = 0.0;
+
+    if (distance1 != 0.0 and distance2 != 0.0)
+    {
+        slope = ((calcAngle1-calcAngle2)/(distance1-distance2));
+
+        if (distance1 == 0.0)
+        {
+            yIntercept = calcAngle1;
+        }
+        else if(distance2 == 0.0)
+        {
+            yIntercept = calcAngle2;
+        }
+    }
+    else
+    {
+        yIntercept = (calcAngle1-(slope*distance1));     
+    }
+
+    double calcDeadZone = ((slope*GetDistanceInInches())+yIntercept);
+
+    return calcDeadZone;
+}
+
+
 void VisionSub::InitNetworkTableData()
 {
     std::string tableName = "photonvision";

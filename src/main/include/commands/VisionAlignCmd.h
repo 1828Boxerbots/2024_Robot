@@ -21,7 +21,7 @@
 class VisionAlignCmd : public frc2::CommandHelper<frc2::Command, VisionAlignCmd> 
 {
  public:
-  VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed, double deadZone);
+  VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed);
 
   void Initialize() override;
 
@@ -35,7 +35,6 @@ class VisionAlignCmd : public frc2::CommandHelper<frc2::Command, VisionAlignCmd>
   VisionSub* m_pVisionSub = nullptr;
   DriveSub* m_pDriveSub = nullptr;
   double m_speed = 0.0;
-  double m_deadZone = 0.0;
   double m_targYaw =0.0;
   bool m_isFinished = false;
   const double kMinDeadZone = 0.1;

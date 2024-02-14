@@ -4,18 +4,12 @@
 
 #include "commands/VisionAlignCmd.h"
 
-VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed, double deadZone)
+VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed)
 {
   SetName("VisionAlignCmd");
   m_pVisionSub = pVisionSub;
   m_pDriveSub = pDriveSub;
   m_speed = fabsf(speed);
-
-  m_deadZone = fabsf(deadZone);
-  if(m_deadZone <= kMinDeadZone)
-  {
-    m_deadZone = kMinDeadZone;
-  }
 
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_pVisionSub);
@@ -26,6 +20,12 @@ VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, doubl
 void VisionAlignCmd::Initialize() 
 {
   m_isFinished = false;
+
+  double deadZone = fabsf(m_pVisionSub->CalculateDeadZone(0.0,0.0,0.0,0.0));
+  if(deadZone <= kMinDeadZone)
+  {
+    deadZone = kMinDeadZone;
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -58,8 +58,10 @@ void VisionAlignCmd::Execute()
     yaw = m_pVisionSub->GetYaw();
   }
 
+  double deadZone = fabsf(m_pVisionSub->CalculateDeadZone(0.0,0.0,0.0,0.0));
+
   // if at center, then stop
-  if((yaw < m_deadZone) and (yaw > -m_deadZone))
+  if((yaw < deadZone) and (yaw > -deadZone))
   {
     //m_isFinished = true;
     m_pDriveSub->DriveTank(0.0, 0.0);
