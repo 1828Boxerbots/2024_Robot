@@ -21,10 +21,10 @@ void VisionAlignCmd::Initialize()
 {
   m_isFinished = false;
 
-  double deadZone = fabsf(m_pVisionSub->CalculateDeadZone(0.0,0.0,0.0,0.0));
-  if(deadZone <= kMinDeadZone)
+  m_deadZone = fabsf(m_pVisionSub->CalculateDeadZone(12.0,5.0,60.0,2.0));
+  if(m_deadZone <= kMinDeadZone)
   {
-    deadZone = kMinDeadZone;
+    m_deadZone = kMinDeadZone;
   }
 }
 
@@ -58,10 +58,8 @@ void VisionAlignCmd::Execute()
     yaw = m_pVisionSub->GetYaw();
   }
 
-  double deadZone = fabsf(m_pVisionSub->CalculateDeadZone(0.0,0.0,0.0,0.0));
-
   // if at center, then stop
-  if((yaw < deadZone) and (yaw > -deadZone))
+  if((yaw < m_deadZone) and (yaw > -m_deadZone))
   {
     //m_isFinished = true;
     m_pDriveSub->DriveTank(0.0, 0.0);
