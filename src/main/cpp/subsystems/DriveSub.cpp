@@ -18,17 +18,23 @@ void DriveSub::Periodic()
 
 void DriveSub::Init()
 {
-    m_MotorLeft.Set(0.0);
-    m_MotorRight.Set(0.0);
+    // m_MotorLeftOne.Set(0.0);
+    // m_MotorLeftTwo.Set(0.0);
+    // m_MotorRightOne.Set(0.0);
+    // m_MotorRightTwo.Set(0.0);
 
-    m_MotorLeft.SetInverted(false);
-    m_MotorRight.SetInverted(true);
+    // m_MotorLeftOne.SetInverted(false);
+    // m_MotorLeftTwo.SetInverted(false);
+    // m_MotorRightOne.SetInverted(true);
+    // m_MotorRightTwo.SetInverted(true);
 }
 
 void DriveSub::DriveTank(double left, double right)
 {
-    m_MotorLeft.Set(left);
-    m_MotorRight.Set(right);
+    // m_MotorLeftOne.Set(left);
+    // m_MotorLeftTwo.Set(left);
+    // m_MotorRightOne.Set(right);
+    // m_MotorRightTwo.Set(right);
 }
 
 void DriveSub::DriveRC(double vertical, double horizontal)

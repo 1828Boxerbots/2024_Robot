@@ -26,8 +26,10 @@ class DriveSub : public frc2::SubsystemBase
   void Periodic() override;
 
  private:
- frc::Victor m_MotorRight{0};
- frc::Victor m_MotorLeft{1};
+  //frc::Victor m_motorLeftOne{2};
+  frc::Victor m_motorLeftTwo{1};
+  //frc::Victor m_motorRightOne{3};
+  frc::Victor m_motorRightTwo{4};
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

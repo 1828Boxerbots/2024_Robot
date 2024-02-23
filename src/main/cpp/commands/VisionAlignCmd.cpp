@@ -21,6 +21,12 @@ void VisionAlignCmd::Initialize()
 {
   m_isFinished = false;
 
+  if(m_pVisionSub == nullptr or m_pDriveSub == nullptr)
+  {
+    m_isFinished = true;
+    return;
+  }
+
   m_deadZone = fabsf(m_pVisionSub->CalculateDeadZone(12.0,5.0,60.0,2.0));
   if(m_deadZone <= kMinDeadZone)
   {
