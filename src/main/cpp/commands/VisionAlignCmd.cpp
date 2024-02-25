@@ -4,12 +4,17 @@
 
 #include "commands/VisionAlignCmd.h"
 
-VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed)
+VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed, double deadZone)
 {
   SetName("VisionAlignCmd");
   m_pVisionSub = pVisionSub;
   m_pDriveSub = pDriveSub;
   m_speed = fabsf(speed);
+  m_deadZone = fabsf(deadZone);
+  if(m_deadZone <= kMinDeadZone)
+  {
+    m_deadZone = kMinDeadZone;
+  }
 
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_pVisionSub);
@@ -20,18 +25,6 @@ VisionAlignCmd::VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, doubl
 void VisionAlignCmd::Initialize() 
 {
   m_isFinished = false;
-
-  if(m_pVisionSub == nullptr or m_pDriveSub == nullptr)
-  {
-    m_isFinished = true;
-    return;
-  }
-
-  m_deadZone = fabsf(m_pVisionSub->CalculateDeadZone(12.0,5.0,60.0,2.0));
-  if(m_deadZone <= kMinDeadZone)
-  {
-    m_deadZone = kMinDeadZone;
-  }
 }
 
 // Called repeatedly when this Command is scheduled to run

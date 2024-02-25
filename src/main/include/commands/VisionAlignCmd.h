@@ -21,7 +21,7 @@
 class VisionAlignCmd : public frc2::CommandHelper<frc2::Command, VisionAlignCmd> 
 {
  public:
-  VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed);
+  VisionAlignCmd(VisionSub *pVisionSub, DriveSub *pDriveSub, double speed, double deadZone);
 
   void Initialize() override;
 
